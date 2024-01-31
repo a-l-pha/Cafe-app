@@ -1,0 +1,48 @@
+.list-group{
+    max-height: 900px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+    max-width: 500px;
+       overflow-x: hidden!important;
+
+}
+.vr {
+
+}
+
+.full-info-box {
+text-align: center;
+}
+p {
+margin: 0 0 0 0;
+ }
+
+.button-link {
+text-decoration: none;
+display: block;
+
+}
+
+.dropdown-item {
+  width:500px!important;
+  display:block;
+
+}
+
+.div-search {
+display: inline;
+}
+
+
+.form {
+float:left;
+}
+
+.dropdown-menu.show {
+    width: 500px;
+    display: block;
+}
+
+
+

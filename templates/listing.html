@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple cafe app</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet" href="./static/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+<div class="d-flex flex-nowrap">
+
+    <div class="d-inline-flex flex-column align-items-stretch flex-shrink-0 bg-light  " style="width: 500px;">
+        {%if can_go_back %}
+
+        <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+            <span class="fs-5 fw-semibold"><i class="bi bi-arrow-left"></i> Back to all Cafes </span>
+        </a>
+        {%else %}
+        <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+            <span class="fs-5 fw-semibold"> Cafes </span>
+        </a>
+        {% endif%}
+        <div class="dropdown " >
+            <div class="d-grid gap-2" >
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Sort by
+                </button>
+
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" style="width:500px;" href="{{url_for('sort_cafes',sort_by='None')}}">None</a></li>
+                    <li><a class="dropdown-item"style="width:500px;" href="{{url_for('sort_cafes',sort_by='Coffee_price')}}">Coffee
+                        price</a></li>
+                    <li><a class="dropdown-item" style="width:500px;" href="{{url_for('sort_cafes',sort_by='Capacity')}}">Capacity</a></li>
+                    <li><a class="dropdown-item" style="width:500px;" href="{{url_for('sort_cafes',sort_by='A-Z')}}">Alphabetical (A-Z)</a>
+                    </li>
+                    <li><a class="dropdown-item" style="width:500px;" href="{{url_for('sort_cafes',sort_by='All-atr')}}">Has all
+                        attributes</a></li>
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <div class="list-group list-group-flush border-bottom scrollarea  ">
+            {% if cafes %}
+            {% for cafe in cafes:%}
+            <a href="/{{cafe.id}}" class="list-group-item list-group-item-action py-3 lh-sm">
+                <div class="d-flex w-100 align-items-center justify-content-between">
+                    <strong class="mb-1">{{cafe.name}}</strong>
+                    <small class="text-muted">{{cafe.id}}</small>
+                </div>
+                <div class="col-10 mb-1 small">
+                    <form action="{{url_for('delete_cafe',cur_id=cafe.id)}}">
+
+                        Coffee price : {{cafe.coffee_price}}
+                        <br>
+                        Location: {{cafe.location}}
+                        <br><br>
+
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Delete</button>
+                    </form>
+
+
+                </div>
+            </a>
+            {% endfor %}
+            {%else%}
+            <a href="" class="list-group-item list-group-item-action py-3 lh-sm btn disabled" style="pointer-events: none;">
+                <div class="d-flex w-100 align-items-center justify-content-between">
+                    <i class="bi bi-x-lg"></i> No results
+                    <small class="text-muted"><i class="bi bi-x-lg"></i></small>
+                </div>
+            </a>
+            {% endif%}
+
+
+        </div>
+
+
+    </div>
+    <div class="d-flex">
+        <div class="vr"></div>
+    </div>
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-light full-info-box " style="width: 85.7rem;">
+        <div class="row">
+            <form action="{{url_for('search_cafe')}}" method="post" class="form-search">
+                <div class="col-5" style="float:left;padding: 0 12px 0 12px;">
+
+                    <input type="search" class="form-control" name="search_box"
+                           aria-describedby="SearchHelp"
+                           placeholder="Search location">
+                </div>
+                <div class="col-1" style="float:left;padding: 0 12px 0 12px;">
+                    <div class="d-grid gap-2 f">
+                        <button type="submit" class="btn btn-outline-secondary">Search
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="col-6" style="float:left;padding: 0 12px 0 12px;">
+                    <a href="/add" class="button-link" style="text-decoration:none;" >
+                        <div class="d-grid gap-2">
+
+                            <button type="button" class="btn btn-outline-secondary  "
+                                    style="display:block;text-decoration: none;">Add
+                                cafe
+                            </button>
+
+                        </div>
+                    </a>
+                </div>
+            </form>
+
+        </div>
+
+        <br><br>
+
+        {% if current_cafe %}
+        Name - {{current_cafe.name}}
+        <br>
+        <p>Map link - <a href="{{current_cafe.map_url}}">{{current_cafe.map_url}}</a></p>
+
+        Location - {{current_cafe.location}}
+        <br>
+        <br>
+
+        Seats - {{current_cafe.seats}}
+        {% if current_cafe.has_toilet %}
+        <p>Toilets - <i class="bi bi-check-circle"></i></p>
+        {%else%}
+        <p>Toilets - <i class="bi bi-x-lg"></i></p>
+        {% endif %}
+
+        {% if current_cafe.has_wifi %}
+        <p>Wifi - <i class="bi bi-check-circle"></i></p>
+        {%else%}
+        <p>Wifi - <i class="bi bi-x-lg"></i></p>
+        {% endif %}
+        {% if current_cafe.has_sockets %}
+        <p>Sockets - <i class="bi bi-check-circle"></i></p>
+        {%else%}
+        <p>Sockets - <i class="bi bi-x-lg"></i></p>
+        {% endif %}
+        {% if current_cafe.can_take_calls %}
+        <p>Can take calls - <i class="bi bi-check-circle"></i></p>
+        {%else%}
+        <p>Can take calls - <i class="bi bi-x-lg"></i></p>
+        {% endif %}
+        Coffee_price - {{current_cafe.coffee_price}}
+        <img src="{{current_cafe.img_url}}" alt="{{current_cafe.img_url}}">
+        <br>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
+
+</body>
